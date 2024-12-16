@@ -249,7 +249,7 @@ parse_responses_object <- function(responses_object, openapi_spec) {
 
 parse_response_object <- function(response_object, openapi_spec) {
   spec <- tspec_object(
-    tib_chr("description"),
+    tib_chr("description", required = FALSE),
     tib_variant("headers", required = FALSE),
     tib_variant("content", required = FALSE),
     tib_variant("links", required = FALSE),
@@ -363,6 +363,10 @@ openapi_resolve_reference <- function(schema, openapi_spec) {
   # FIXME this is probably quite a hack...
   ref <- ref %||% schema$allOf[[1]]$`$ref`
   if (!is.null(ref)) {
+    if (is_url_string(ref)) {
+      other_parts <- schema[setdiff(names(schema), "$ref")]
+      return(c(yaml::read_yaml(ref, readLines.warn = FALSE), other_parts))
+    }
     ref_parts <- strsplit(ref, "/")[[1]]
     if (ref_parts[[1]] != "#") {
       cli_abort("{.field ref} does not start with {.value #}", .internal = TRUE)
