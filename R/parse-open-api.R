@@ -182,6 +182,7 @@ parse_operation_object <- function(operation_object, openapi_spec) {
   data$request_body <- list(parse_request_body(data$request_body, openapi_spec))
   data$parameters <- list(parse_parameters(data$parameters, openapi_spec))
   data$responses <- list(parse_responses_object(data$responses, openapi_spec))
+  data$tags <- list(data$tags)
 
   fast_tibble(unclass(data), n = 1L)
 }
