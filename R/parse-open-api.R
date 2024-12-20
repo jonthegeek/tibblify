@@ -138,14 +138,20 @@ parse_path_item_object <- function(path_item_object, openapi_spec) {
   # FIXME pass along `parameters`?
   parameters <- parse_parameters(path_item_object$parameters, openapi_spec)
 
-  # TODO `summary`: An optional, string summary, intended to apply to all operations in this path.
-  # TODO `description`: An optional, string description, intended to apply to all operations in this path. CommonMark syntax MAY be used for rich text representation.
+  # TODO `summary`: An optional, string summary, intended to apply to all
+  # operations in this path.
+  #
+  # TODO `description`: An optional, string description, intended to apply to
+  # all operations in this path. CommonMark syntax MAY be used for rich text
+  # representation.
+  #
   # TODO `parameters`: A list of parameters that are applicable for all the
   # operations described under this path. These parameters can be overridden at
   # the operation level, but cannot be removed there. The list MUST NOT include
   # duplicated parameters. A unique parameter is defined by a combination of a
   # name and location. The list can use the Reference Object to link to
   # parameters that are defined at the OpenAPI Object’s components/parameters.
+  #
   # if (has_name(path_item_object, "summary") ||
   #     has_name(path_item_object, "description")) {
   #   browser()
@@ -176,6 +182,7 @@ parse_operation_object <- function(operation_object, openapi_spec) {
     request_body = tib_variant("requestBody", required = FALSE),
     tib_variant("responses", required = FALSE),
     tib_lgl("deprecated", required = FALSE, fill = FALSE),
+    tib_variant("security", required = FALSE),
   )
   data <- tibblify(operation_object, spec)
 
@@ -261,7 +268,7 @@ parse_response_object <- function(response_object, openapi_spec) {
   }
   # FIXME links
   if (!is_empty(parsed_response$links)) {
-    browser()
+    stop("Links")
   }
   parsed_response$content <- parse_media_type_objects(parsed_response$content, openapi_spec)
 
@@ -501,7 +508,8 @@ handle_one_of_tspec <- function(schema, openapi_spec) {
   tryCatch({
     tspec_combine(!!!out)
   }, error = function(cnd) {
-    browser()
+    # browser()
+    stop("Can't combine")
     tib_variant()
   })
 }
