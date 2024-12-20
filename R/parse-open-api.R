@@ -412,6 +412,13 @@ parse_schema <- function(schema, name, openapi_spec) {
     out <- handle_one_of(schema, name, openapi_spec)
     return(out)
   }
+  # Since we're just combining specs, this should be enough.
+  if (!is.null(schema$anyOf)) {
+    schema$oneOf <- schema$anyOf
+    schema$anyOf <- NULL
+    out <- handle_one_of(schema, name, openapi_spec)
+    return(out)
+  }
   if (!is.null(schema$allOf)) {
     out <- handle_all_of(schema, name, openapi_spec)
     return(out)
